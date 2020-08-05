@@ -72,10 +72,12 @@ public class Controlador {
             view.luzOn();
             limite.setContinua(true);
             
-            int sampleRate = 100000;
+            int sampleRate = view.getSampleRate();
+            //100000;
             AudioFormat af = new AudioFormat( (float )sampleRate, 8, 1, true, false );
 
-            int bufferSize = 4400;
+            int bufferSize = view.getBufferSize();
+            //4400;
 
             hilo = new Thread(() -> {
                 Sinte.synth(af, sampleRate, waves, limite, bufferSize);
