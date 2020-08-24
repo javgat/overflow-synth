@@ -5,6 +5,7 @@
  */
 package javgat.synth.vc;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.sound.sampled.AudioFormat;
 import javgat.synth.modelo.Sawtooth;
@@ -53,11 +54,14 @@ public class Controlador {
         limite.setLimite(limitVal);
         limite.setWaitErrorDelay(waitD);
         limite.setVolume(vol);
+        DecimalFormat df = new DecimalFormat("0.000");
+        String value;
         for(int i = 0; i < waves.size(); i++){
             waves.get(i).setOriginalTime(times.get(i));
             waves.get(i).setVolume(vols.get(i));
+            value = df.format(times.get(i));
+            view.setTimeLabel(value, i);
         }
-        
     }
     
     private void setOff(){
