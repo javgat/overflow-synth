@@ -19,7 +19,8 @@ import javgat.synth.modelo.Waveform;
 
 /**
  *
- * @author Javier
+ * @author Javier Gatón Herguedas (javgat)
+ * 
  */
 public class Controlador {
     

@@ -7,7 +7,8 @@ package javgat.synth.modelo;
 
 /**
  *
- * @author Javier
+ * @author Javier Gatón Herguedas (javgat)
+ * 
  */
 public class Wave{
 

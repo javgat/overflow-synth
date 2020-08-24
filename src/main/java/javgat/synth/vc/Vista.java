@@ -10,7 +10,8 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Javier
+ * @author Javier Gatón Herguedas (javgat)
+ * 
  */
 public class Vista extends javax.swing.JFrame {
 
