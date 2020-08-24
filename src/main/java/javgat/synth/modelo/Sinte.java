@@ -79,7 +79,7 @@ public class Sinte {
                 
                 for(int j = 0; j < waves.size(); j++){
                     if(waves.get(j).isOn()){
-                        min = waves.get(0);
+                        min = waves.get(j);
                         break;
                     }
                 }
