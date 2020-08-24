@@ -33,7 +33,7 @@ public class Controlador {
     public Controlador(Vista vista){
         view = vista;
         waves = new ArrayList<>();
-        limite = new Variables(20000000.0,0);
+        limite = new Variables(20000000.0);
         on = false;
         
         waves.add(new Wave(440));
@@ -47,16 +47,19 @@ public class Controlador {
         ArrayList<Double> times, vols;
         times = view.getOriginalTimes();
         vols = view.getVolumes();
-        double limitVal, waitD, vol;
+        double limitVal, waitD, vol, factD;
         limitVal = view.getLimit();
         waitD = view.getWaitDelay();
+        factD = view.getFactDelay();
         vol = view.getVolume();
         
-        limite.setLimite(limitVal);
-        limite.setWaitErrorDelay(waitD);
-        limite.setVolume(vol);
         DecimalFormat df = new DecimalFormat("0.000");
-        String value;
+        String value = df.format(limitVal);
+        limite.setLimite(limitVal);
+        view.setLimitLabel(value);
+        limite.setWaitErrorDelay(waitD);
+        limite.setFactorDelay(factD);
+        limite.setVolume(vol);
         for(int i = 0; i < waves.size(); i++){
             waves.get(i).setOriginalTime(times.get(i));
             waves.get(i).setVolume(vols.get(i));

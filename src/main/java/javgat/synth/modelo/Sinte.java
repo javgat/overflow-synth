@@ -15,53 +15,9 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Sinte {
-
-    public static double position(int i, double freq, int rate){
-        double bitsWave = rate/freq;
-        double posOnda = i % bitsWave;
-        return posOnda/bitsWave;
-    }
-
-    public static void step(ArrayList<Wave> waves, double timeStep){
-        for(int j = 0; j < waves.size(); j++){
-            waves.get(j).subTime(timeStep);
-        }
-    }
-    
-    public static double calculateValue(ArrayList<Wave> waves){
-        double value = 0;
-        double fraction = 1.0/waves.size();
-        for(int j = 0; j < waves.size(); j++){
-            if(waves.get(j).isUp() && waves.get(j).isOn())
-                value += fraction*waves.get(j).getVolume();
-        }
-        return value;
-    }
-
-    public static void wait(double microsecs, int sampleRate, double value, byte[] buf, SourceDataLine sdl, Variables limit){
-        int steps = (int) (microsecs * (sampleRate/1000000.0));
-        /*
-        for(int i = 0; i < steps; i++){
-            buf[0] = (byte)(value*30);
-            sdl.write( buf, 0, 1 );
-        }
-        */
-        
-        byte valor = (byte)(value*limit.getVolume());
-        int cont = 0;
-        for(int i = 0; i < buf.length; i++){
-            buf[i] = valor;
-        }
-        while(cont<steps-buf.length){
-            sdl.write( buf, 0, buf.length );
-            cont += buf.length;
-        }
-        sdl.write(buf, 0, steps-cont);
-        
-    }
-    
     
     private static ArrayList<Double> calculateValues(ArrayList<Wave> waves) {
         ArrayList<Double> values = new ArrayList<>();
@@ -84,6 +40,8 @@ public class Sinte {
     
     public static void mergeSounds(ArrayList<Double> initVals, ArrayList<Wave> waves, double timeWaited, 
             int sampleRate, byte[] buf, SourceDataLine sdl, Variables limit){
+        timeWaited += limit.getWaitErrorDelay();
+        timeWaited *= limit.getFactorDelay();
         int steps = (int) (timeWaited * (sampleRate/1000000.0));
         double value;
         int cont = 0;
@@ -131,15 +89,13 @@ public class Sinte {
                             min = waves.get(j);						
                     }
                     initVals = calculateValues(waves);
-                    //value = calculateValue(waves);
                     double timeWaited = min.getTimeLeft()%limit.getLimite();	
                     double timeNotWaited = min.getTimeLeft();
                     for(int j = 0; j < waves.size(); j++){
                         if(waves.get(j).isOn())
                             waves.get(j).subTime(timeNotWaited);
                     }
-                    mergeSounds(initVals, waves, timeWaited+limit.getWaitErrorDelay(), sampleRate, buf, sdl, limit);
-                    //wait(timeWaited + limit.getWaitErrorDelay(), sampleRate, value, buf, sdl, limit);
+                    mergeSounds(initVals, waves, timeWaited, sampleRate, buf, sdl, limit);
                 }
 
             }

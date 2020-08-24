@@ -12,14 +12,16 @@ package javgat.synth.modelo;
  */
 public class Variables {
     
-    private double limite, errorDelay, vol;
+    private double limite, errorDelay, vol, duration, factorDelay;
     private boolean continua;
     
-    public Variables(double limite, double errorDelay){
+    public Variables(double limite){
         this.limite = limite;
-        this.errorDelay = errorDelay;
-        this.vol = 30;
+        errorDelay = 0;
+        vol = 30;
         continua = true;
+        duration=1;
+        factorDelay = 1;
     }
     
     public boolean getContinua(){
@@ -52,6 +54,22 @@ public class Variables {
     
     public void setVolume(double volume){
         vol = volume;
+    }
+    
+    public double getDuration(){
+        return duration;
+    }
+    
+    public void setDuration(double duration){
+        this.duration=duration;
+    }
+    
+    public double getFactorDelay(){
+        return factorDelay;
+    }
+    
+    public void setFactorDelay(double factorDelay){
+        this.factorDelay = factorDelay;
     }
 
 }
