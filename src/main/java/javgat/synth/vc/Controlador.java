@@ -48,13 +48,20 @@ public class Controlador {
         times = view.getOriginalTimes();
         vols = view.getVolumes();
         double limitVal, waitD, vol, factD;
+        DecimalFormat df = new DecimalFormat("0.000");
+        String value;
+        
         limitVal = view.getLimit();
         waitD = view.getWaitDelay();
+        value = df.format(waitD);
+        view.setWaitDLabel(value);
+        
         factD = view.getFactDelay();
+        value = df.format(factD);
+        view.setFactDLabel(value);
         vol = view.getVolume();
         
-        DecimalFormat df = new DecimalFormat("0.000");
-        String value = df.format(limitVal);
+        value = df.format(limitVal);
         limite.setLimite(limitVal);
         view.setLimitLabel(value);
         limite.setWaitErrorDelay(waitD);
