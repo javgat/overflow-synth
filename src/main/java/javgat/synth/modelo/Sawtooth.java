@@ -7,6 +7,8 @@ package javgat.synth.modelo;
 
 /**
  *
+ * Representación de la onda de sierra
+ * 
  * @author Javier Gatón Herguedas (javgat)
  * 
  */

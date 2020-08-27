@@ -7,6 +7,9 @@ package javgat.synth.modelo;
 
 /**
  *
+ * Sintetizador, pensado para lanzarse en hilo y que se modifiquen los valores
+ * de los objetos
+ * 
  * @author Javier Gatón Herguedas (javgat)
  * 
  */
@@ -15,7 +18,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Sinte {
     
@@ -27,6 +29,14 @@ public class Sinte {
         return values;
     }
     
+    /**
+     * Calcula el valor de un punto en concreto del sonido
+     * @param initVals Valores iniciales
+     * @param waves Ondas (con valor actual)
+     * @param cont Numero de pasos transcurridos
+     * @param steps Pasos totales
+     * @return 
+     */
     public static double calculatePoint(ArrayList<Double> initVals, ArrayList<Wave> waves, int cont, int steps){
         double value = 0;
         for(int j = 0; j < waves.size(); j++){
@@ -38,6 +48,17 @@ public class Sinte {
         return value;
     }
     
+    /**
+     * Termina de calcular y emite los sonidos que producen las ondas con el limite
+     * Le das los valores iniciales, finales y las ondas que lo hacen
+     * @param initVals Valores iniciales
+     * @param waves Ondas
+     * @param timeWaited Tiempo esperado
+     * @param sampleRate SampleRate
+     * @param buf Buffer
+     * @param sdl SourceDataLine usado
+     * @param limit Variables del sintetizador
+     */
     public static void mergeSounds(ArrayList<Double> initVals, ArrayList<Wave> waves, double timeWaited, 
             int sampleRate, byte[] buf, SourceDataLine sdl, Variables limit){
         timeWaited += limit.getWaitErrorDelay();
@@ -64,6 +85,14 @@ public class Sinte {
         
     }
 
+    /**
+     * Clase principal para lanzar
+     * @param af Audioformat con el sampleRate introducido
+     * @param sampleRate Samplerate correspondiente al audioformat
+     * @param waves Arraylist de las ondas que deben estar creadas de antemano
+     * @param limit Variables del sintetizador
+     * @param bufferSize Tamaño del buffer
+     */
     public static void synth(AudioFormat af, int sampleRate, ArrayList<Wave> waves, Variables limit, int bufferSize){
         ArrayList<Double> initVals = new ArrayList<>();
         try{

@@ -7,6 +7,8 @@ package javgat.synth.modelo;
 
 /**
  *
+ * Representación de ondas triangulares
+ * 
  * @author Javier Gatón Herguedas (javgat)
  * 
  */
