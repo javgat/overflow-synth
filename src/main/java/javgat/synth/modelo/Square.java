@@ -6,6 +6,8 @@
 package javgat.synth.modelo;
 
 /**
+ * 
+ * Representación de ondas cuadradas
  *
  * @author Javier Gatón Herguedas (javgat)
  * 

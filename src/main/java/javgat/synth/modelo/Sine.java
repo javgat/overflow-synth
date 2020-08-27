@@ -7,11 +7,17 @@ package javgat.synth.modelo;
 
 /**
  *
+ * Representación de ondas sinusoidales
+ * 
  * @author Javier Gatón Herguedas (javgat)
  * 
  */
 public class Sine implements Waveform {
 
+    /*
+    * Transporte del valor al valor negativo que tendría, ya que el eje es
+    * entre 0 y 1 entonces la mitad es 0.5 y no 0 como quizá sería más intuitivo
+    */
     private double transportNegative(double val){
         return (val-0.5)*2;
     }

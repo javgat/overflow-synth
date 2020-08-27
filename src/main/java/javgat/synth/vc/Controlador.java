@@ -19,6 +19,8 @@ import javgat.synth.modelo.Waveform;
 
 /**
  *
+ * Controlador de la interfaz de Overflow Synth
+ * 
  * @author Javier Gatón Herguedas (javgat)
  * 
  */
@@ -43,6 +45,10 @@ public class Controlador {
         
     }
     
+    /**
+     * Cuando se modifique algún slider de la vista se llamará a este método
+     * Modifica los valores asociados a estos sliders
+     */
     public void sliderChanged(){
         ArrayList<Double> times, vols;
         times = view.getOriginalTimes();
@@ -75,12 +81,18 @@ public class Controlador {
         }
     }
     
+    /**
+     * Apaga el sintetizador
+     */
     private void setOff(){
         on = false;
         limite.setContinua(false);
         view.luzOff();
     }
     
+    /**
+     * Enciende el sintetizador, hace que suene y genera un nuevo objeto Sinte
+     */
     public void setOn(){
         if(!on){
             on = true;
@@ -106,6 +118,9 @@ public class Controlador {
         }
     }
 
+    /**
+     * Cuando hay alguna pulsación de botón de onda se activa y las controla
+     */
     public void switchButton() {
         ArrayList<Boolean> enc = view.getOndasOn();
         for(int i = 0; i < waves.size(); i++){
@@ -114,6 +129,9 @@ public class Controlador {
         }
     }
 
+    /**
+     * Cuando se modifica algún combobox (los dropdown) actualiza los valores
+     */
     void comboChanged() {
         ArrayList<String> wfs = view.getWaveforms();
         for(int i = 0; i < waves.size(); i++){
