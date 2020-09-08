@@ -54,6 +54,7 @@ public class Controlador {
      */
     public void sliderChanged(){
         if(!spinnerChanged){
+            sliderChanged = true;
             ArrayList<Double> times, vols;
             times = view.getOriginalTimesSlider();
             vols = view.getVolumes();
@@ -61,19 +62,16 @@ public class Controlador {
             DecimalFormat df = new DecimalFormat("0.000");
             String value;
 
-            limitVal = view.getLimit();
-            waitD = view.getWaitDelay();
-            value = df.format(waitD);
-            view.setWaitDLabel(value);
+            limitVal = view.getLimitSlider();
+            waitD = view.getWaitDelaySlider();
+            view.setWaitDSpinner(waitD);
 
-            factD = view.getFactDelay();
-            value = df.format(factD);
-            view.setFactDLabel(value);
+            factD = view.getFactDelaySlider();
+            view.setFactDSpinner(factD);
             vol = view.getVolume();
 
-            value = df.format(limitVal);
             limite.setLimite(limitVal);
-            view.setLimitLabel(value);
+            view.setLimitSpinner(limitVal);
             limite.setWaitErrorDelay(waitD);
             limite.setFactorDelay(factD);
             limite.setVolume(vol);
@@ -83,7 +81,6 @@ public class Controlador {
 
                 view.changeTimeNumber(times.get(i), i);
             }
-            sliderChanged = true;
         }else{
             spinnerChanged = false;
         }
@@ -166,36 +163,31 @@ public class Controlador {
 
     void spinnerChanged() {
         if(!sliderChanged){
+            spinnerChanged = true;
             ArrayList<Double> times, vols;
             times = view.getOriginalTimesSpinner();
-            /*vols = view.getVolumes();
-            double limitVal, waitD, vol, factD;
-            DecimalFormat df = new DecimalFormat("0.000");
-            String value;
-
-            limitVal = view.getLimit();
-            waitD = view.getWaitDelay();
-            value = df.format(waitD);
-            view.setWaitDLabel(value);
-
-            factD = view.getFactDelay();
-            value = df.format(factD);
-            view.setFactDLabel(value);
-            vol = view.getVolume();
-
-            value = df.format(limitVal);
+            double limitVal = view.getLimitSpinner();
             limite.setLimite(limitVal);
-            view.setLimitLabel(value);
+            view.setLimitSlider(limitVal);
+            
+            double waitD, factD;
+
+            waitD = view.getWaitDelaySpinner();
+            
+            view.setWaitDSlider(waitD);
+
+            factD = view.getFactDelaySpinner();
+            
+            view.setFactDSlider(factD);
+
             limite.setWaitErrorDelay(waitD);
             limite.setFactorDelay(factD);
-            limite.setVolume(vol);*/
             for(int i = 0; i < waves.size(); i++){
                 waves.get(i).setOriginalTime(times.get(i));
-                //waves.get(i).setVolume(vols.get(i));
 
                 view.changeTimeSlider(times.get(i), i);
             }
-            spinnerChanged = true;
+            
         }else{
             sliderChanged = false;
         }
