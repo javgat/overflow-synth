@@ -27,7 +27,7 @@ import javgat.synth.modelo.Waveform;
 public class Controlador {
     
     private final Vista view;
-    private boolean on;
+    private boolean on, spinnerChanged, sliderChanged;
     private ArrayList<Wave> waves;
     private Variables limite;
     private Thread hilo;
@@ -43,6 +43,9 @@ public class Controlador {
         waves.add(new Wave(440));
         waves.add(new Wave(440));
         
+        spinnerChanged = false;
+        sliderChanged = false;
+        
     }
     
     /**
@@ -50,34 +53,39 @@ public class Controlador {
      * Modifica los valores asociados a estos sliders
      */
     public void sliderChanged(){
-        ArrayList<Double> times, vols;
-        times = view.getOriginalTimes();
-        vols = view.getVolumes();
-        double limitVal, waitD, vol, factD;
-        DecimalFormat df = new DecimalFormat("0.000");
-        String value;
-        
-        limitVal = view.getLimit();
-        waitD = view.getWaitDelay();
-        value = df.format(waitD);
-        view.setWaitDLabel(value);
-        
-        factD = view.getFactDelay();
-        value = df.format(factD);
-        view.setFactDLabel(value);
-        vol = view.getVolume();
-        
-        value = df.format(limitVal);
-        limite.setLimite(limitVal);
-        view.setLimitLabel(value);
-        limite.setWaitErrorDelay(waitD);
-        limite.setFactorDelay(factD);
-        limite.setVolume(vol);
-        for(int i = 0; i < waves.size(); i++){
-            waves.get(i).setOriginalTime(times.get(i));
-            waves.get(i).setVolume(vols.get(i));
-            value = df.format(times.get(i));
-            view.setTimeLabel(value, i);
+        if(!spinnerChanged){
+            ArrayList<Double> times, vols;
+            times = view.getOriginalTimesSlider();
+            vols = view.getVolumes();
+            double limitVal, waitD, vol, factD;
+            DecimalFormat df = new DecimalFormat("0.000");
+            String value;
+
+            limitVal = view.getLimit();
+            waitD = view.getWaitDelay();
+            value = df.format(waitD);
+            view.setWaitDLabel(value);
+
+            factD = view.getFactDelay();
+            value = df.format(factD);
+            view.setFactDLabel(value);
+            vol = view.getVolume();
+
+            value = df.format(limitVal);
+            limite.setLimite(limitVal);
+            view.setLimitLabel(value);
+            limite.setWaitErrorDelay(waitD);
+            limite.setFactorDelay(factD);
+            limite.setVolume(vol);
+            for(int i = 0; i < waves.size(); i++){
+                waves.get(i).setOriginalTime(times.get(i));
+                waves.get(i).setVolume(vols.get(i));
+
+                view.changeTimeNumber(times.get(i), i);
+            }
+            sliderChanged = true;
+        }else{
+            spinnerChanged = false;
         }
     }
     
@@ -153,6 +161,43 @@ public class Controlador {
                     wf = new Square();
             }
             waves.get(i).setWaveform(wf);
+        }
+    }
+
+    void spinnerChanged() {
+        if(!sliderChanged){
+            ArrayList<Double> times, vols;
+            times = view.getOriginalTimesSpinner();
+            /*vols = view.getVolumes();
+            double limitVal, waitD, vol, factD;
+            DecimalFormat df = new DecimalFormat("0.000");
+            String value;
+
+            limitVal = view.getLimit();
+            waitD = view.getWaitDelay();
+            value = df.format(waitD);
+            view.setWaitDLabel(value);
+
+            factD = view.getFactDelay();
+            value = df.format(factD);
+            view.setFactDLabel(value);
+            vol = view.getVolume();
+
+            value = df.format(limitVal);
+            limite.setLimite(limitVal);
+            view.setLimitLabel(value);
+            limite.setWaitErrorDelay(waitD);
+            limite.setFactorDelay(factD);
+            limite.setVolume(vol);*/
+            for(int i = 0; i < waves.size(); i++){
+                waves.get(i).setOriginalTime(times.get(i));
+                //waves.get(i).setVolume(vols.get(i));
+
+                view.changeTimeSlider(times.get(i), i);
+            }
+            spinnerChanged = true;
+        }else{
+            sliderChanged = false;
         }
     }
     
