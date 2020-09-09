@@ -5,7 +5,6 @@
  */
 package javgat.synth.vc;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.sound.sampled.AudioFormat;
 import javgat.synth.modelo.Sawtooth;
@@ -48,6 +47,16 @@ public class Controlador {
         
     }
     
+    private void commonChanges(double limitVal, double waitD, double factD){
+        limite.setLimite(limitVal);
+        limite.setWaitErrorDelay(waitD);
+        limite.setFactorDelay(factD);
+        if(factD >= 1)
+            view.setFDStep(0.1);
+        else
+            view.setFDStep(0.01);
+    }
+    
     /**
      * Cuando se modifique algún slider de la vista se llamará a este método
      * Modifica los valores asociados a estos sliders
@@ -59,22 +68,19 @@ public class Controlador {
             times = view.getOriginalTimesSlider();
             vols = view.getVolumes();
             double limitVal, waitD, vol, factD;
-            DecimalFormat df = new DecimalFormat("0.000");
-            String value;
 
             limitVal = view.getLimitSlider();
             waitD = view.getWaitDelaySlider();
-            view.setWaitDSpinner(waitD);
-
             factD = view.getFactDelaySlider();
-            view.setFactDSpinner(factD);
             vol = view.getVolume();
-
-            limite.setLimite(limitVal);
-            view.setLimitSpinner(limitVal);
-            limite.setWaitErrorDelay(waitD);
-            limite.setFactorDelay(factD);
+            
+            commonChanges(limitVal, waitD, factD);
             limite.setVolume(vol);
+            
+            view.setLimitSpinner(limitVal);
+            view.setWaitDSpinner(waitD);
+            view.setFactDSpinner(factD);
+            
             for(int i = 0; i < waves.size(); i++){
                 waves.get(i).setOriginalTime(times.get(i));
                 waves.get(i).setVolume(vols.get(i));
@@ -167,21 +173,16 @@ public class Controlador {
             ArrayList<Double> times, vols;
             times = view.getOriginalTimesSpinner();
             double limitVal = view.getLimitSpinner();
-            limite.setLimite(limitVal);
-            view.setLimitSlider(limitVal);
-            
             double waitD, factD;
-
             waitD = view.getWaitDelaySpinner();
-            
-            view.setWaitDSlider(waitD);
-
             factD = view.getFactDelaySpinner();
             
+            commonChanges(limitVal, waitD, factD);
+            
+            view.setLimitSlider(limitVal);
+            view.setWaitDSlider(waitD);
             view.setFactDSlider(factD);
-
-            limite.setWaitErrorDelay(waitD);
-            limite.setFactorDelay(factD);
+            
             for(int i = 0; i < waves.size(); i++){
                 waves.get(i).setOriginalTime(times.get(i));
 

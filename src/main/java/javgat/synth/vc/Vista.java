@@ -8,6 +8,7 @@ package javgat.synth.vc;
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -19,6 +20,11 @@ import java.util.ArrayList;
 public class Vista extends javax.swing.JFrame {
 
     private Controlador ctrl;
+    private static final double VALMAXLIM = 10000.0;
+    private static final double VALMAXBIG = 10000.0;
+    private static final double VALMAXWD = 10000.0;
+    private static final double VALMAXFD = 4.0;
+    
     /**
      * Creates new form Vista
      */
@@ -152,7 +158,7 @@ public class Vista extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerFDelay.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.125d, 8.0d, 0.1d));
+        jSpinnerFDelay.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.062d, 16.0d, 0.1d));
         jSpinnerFDelay.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerFDelayStateChanged(evt);
@@ -975,7 +981,7 @@ public class Vista extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(68, 68, 68)
                         .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 24, Short.MAX_VALUE)
+                .addGap(18, 30, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -998,7 +1004,7 @@ public class Vista extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1006,14 +1012,14 @@ public class Vista extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -1244,8 +1250,6 @@ public class Vista extends javax.swing.JFrame {
     }
     
     public ArrayList<Double> getOriginalTimesSlider(){
-        double VALMAXBIG = 10000.0;
-        double VALMAXLIT = 100.0;
         ArrayList<Double> times = new ArrayList<>();
         times.add(getValueSlider(jSliderTime1, VALMAXBIG) /*+ getValueSlider(jSlider3, VALMAXLIT)*/);
         times.add(getValueSlider(jSliderTime2, VALMAXBIG) /*+ getValueSlider(jSlider14, VALMAXLIT)*/);
@@ -1278,15 +1282,12 @@ public class Vista extends javax.swing.JFrame {
     }
     
     public double getLimitSlider(){
-        double VALMAXBIG = 10000.0;
-        double VALMAXLIT = 100.0;
-        return (getValueSlider(jSliderLimit, VALMAXBIG) /*+ getValueSlider(jSlider20, VALMAXLIT)*/);
+        return (getValueSlider(jSliderLimit, VALMAXLIM) /*+ getValueSlider(jSlider20, VALMAXLIT)*/);
     }
     
     
     public double getWaitDelaySlider(){
-        double VALMAXDEL = 10000.0;
-        return getValueSlider(jSliderWDelay, VALMAXDEL);
+        return getValueSlider(jSliderWDelay, VALMAXWD);
     }
     
 
@@ -1355,7 +1356,6 @@ public class Vista extends javax.swing.JFrame {
     }
     
     public double getFactDelaySlider() {
-        double VALMAXFD = 3.0;
         double value = getValueSlider(jSliderFDelay, VALMAXFD);
         return Math.pow(2,value);
     }
@@ -1383,7 +1383,6 @@ public class Vista extends javax.swing.JFrame {
     }
     
     public void setLimitSpinner(double value){
-        //jLabelLimit.setText(value);
         jSpinnerLimit.setValue(value);
     }
 
@@ -1396,7 +1395,7 @@ public class Vista extends javax.swing.JFrame {
     }
     
     private static int getReverseValueSlider(javax.swing.JSlider js, double value, double max){
-        return (int) ((value*js.getMaximum()/max)/*+0.5*/);
+        return (int) ((value*js.getMaximum()/max));
     }
 
     public void changeTimeSlider(Double value, int i) {
@@ -1418,7 +1417,6 @@ public class Vista extends javax.swing.JFrame {
                 throw new IllegalArgumentException("No hay ese numero de etiqueta temporal");
         }
         
-        double VALMAXBIG = 10000.0;
         js.setValue(getReverseValueSlider(js,value, VALMAXBIG));
     }
 
@@ -1428,7 +1426,6 @@ public class Vista extends javax.swing.JFrame {
 
     public void setLimitSlider(double limitVal) {
         
-        double VALMAXLIM = 10000.0;
         javax.swing.JSlider js = jSliderLimit;
         js.setValue(getReverseValueSlider(js, limitVal, VALMAXLIM));
     }
@@ -1438,7 +1435,6 @@ public class Vista extends javax.swing.JFrame {
     }
 
     public void setWaitDSlider(double waitD) {
-        double VALMAXWD = 10000.0;
         javax.swing.JSlider js = jSliderWDelay;
         js.setValue(getReverseValueSlider(js, waitD, VALMAXWD));
     }
@@ -1452,9 +1448,13 @@ public class Vista extends javax.swing.JFrame {
     }
     
     public void setFactDSlider(double factD) {
-        double VALMAXFD = 3.0;
+        
         javax.swing.JSlider js = jSliderFDelay;
         js.setValue(getReverseValueSlider(js, log2(factD), VALMAXFD));
+    }
+    
+    public void setFDStep(double size){
+        ((SpinnerNumberModel)jSpinnerFDelay.getModel()).setStepSize(size);
     }
 
 }
