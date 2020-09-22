@@ -5,7 +5,6 @@
  */
 package javgat.synth.vc;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.sound.sampled.AudioFormat;
 import javgat.synth.modelo.Sawtooth;
@@ -27,8 +26,9 @@ import javgat.synth.modelo.Waveform;
 public class Controlador {
     
     private final Vista view;
-    private boolean on;
+    private boolean on, spinnerChanged, sliderChanged, isFreq;
     private ArrayList<Wave> waves;
+    private ArrayList<Boolean> inFreq;
     private Variables limite;
     private Thread hilo;
     
@@ -43,6 +43,26 @@ public class Controlador {
         waves.add(new Wave(440));
         waves.add(new Wave(440));
         
+        spinnerChanged = false;
+        sliderChanged = false;
+        inFreq = new ArrayList<>();
+        inFreq.add(false);
+        inFreq.add(false);
+        inFreq.add(false);
+        inFreq.add(false);
+        
+        isFreq = false;
+        
+    }
+    
+    private void commonChanges(double limitVal, double waitD, double factD){
+        limite.setLimite(limitVal);
+        limite.setWaitErrorDelay(waitD);
+        limite.setFactorDelay(factD);
+        if(factD >= 1)
+            view.setFDStep(0.1);
+        else
+            view.setFDStep(0.01);
     }
     
     /**
@@ -50,34 +70,38 @@ public class Controlador {
      * Modifica los valores asociados a estos sliders
      */
     public void sliderChanged(){
-        ArrayList<Double> times, vols;
-        times = view.getOriginalTimes();
-        vols = view.getVolumes();
-        double limitVal, waitD, vol, factD;
-        DecimalFormat df = new DecimalFormat("0.000");
-        String value;
-        
-        limitVal = view.getLimit();
-        waitD = view.getWaitDelay();
-        value = df.format(waitD);
-        view.setWaitDLabel(value);
-        
-        factD = view.getFactDelay();
-        value = df.format(factD);
-        view.setFactDLabel(value);
-        vol = view.getVolume();
-        
-        value = df.format(limitVal);
-        limite.setLimite(limitVal);
-        view.setLimitLabel(value);
-        limite.setWaitErrorDelay(waitD);
-        limite.setFactorDelay(factD);
-        limite.setVolume(vol);
-        for(int i = 0; i < waves.size(); i++){
-            waves.get(i).setOriginalTime(times.get(i));
-            waves.get(i).setVolume(vols.get(i));
-            value = df.format(times.get(i));
-            view.setTimeLabel(value, i);
+        if(!spinnerChanged){
+            sliderChanged = true;
+            ArrayList<Double> times, vols;
+            times = view.getOriginalTimesSlider();
+            vols = view.getVolumes();
+            double limitVal, waitD, vol, factD;
+
+            limitVal = view.getLimitSlider();
+            waitD = view.getWaitDelaySlider();
+            factD = view.getFactDelaySlider();
+            vol = view.getVolume();
+            
+            commonChanges(limitVal, waitD, factD);
+            limite.setVolume(vol);
+            
+            view.setLimitSpinner(limitVal);
+            view.setWaitDSpinner(waitD);
+            view.setFactDSpinner(factD);
+            
+            double spinnerNumber;
+            for(int i = 0; i < waves.size(); i++){
+                waves.get(i).setOriginalTime(times.get(i));
+                waves.get(i).setVolume(vols.get(i));
+                    
+                if(inFreq.get(i))
+                    spinnerNumber = demipToHz(times.get(i));
+                else
+                    spinnerNumber = times.get(i);
+                view.changeTimeNumber(spinnerNumber, i);
+            }
+        }else{
+            spinnerChanged = false;
         }
     }
     
@@ -132,7 +156,7 @@ public class Controlador {
     /**
      * Cuando se modifica algún combobox (los dropdown) actualiza los valores
      */
-    void comboChanged() {
+    public void comboChanged() {
         ArrayList<String> wfs = view.getWaveforms();
         for(int i = 0; i < waves.size(); i++){
             Waveform wf;
@@ -153,6 +177,84 @@ public class Controlador {
                     wf = new Square();
             }
             waves.get(i).setWaveform(wf);
+        }
+    }
+
+    public void spinnerChanged() {
+        if(!sliderChanged){
+            spinnerChanged = true;
+            ArrayList<Double> times;
+            times = view.getTimeValuesSpinner();
+            double limitVal = view.getLimitSpinner();
+            double waitD, factD;
+            waitD = view.getWaitDelaySpinner();
+            factD = view.getFactDelaySpinner();
+            
+            commonChanges(limitVal, waitD, factD);
+            
+            view.setLimitSlider(limitVal);
+            view.setWaitDSlider(waitD);
+            view.setFactDSlider(factD);
+            
+            double time;
+            for(int i = 0; i < waves.size(); i++){
+                if(inFreq.get(i)){
+                    time = hzToDemip(times.get(i));
+                }else
+                    time = times.get(i);
+                waves.get(i).setOriginalTime(time);
+
+                view.changeTimeSlider(time, i);
+            }
+            
+        }else{
+            sliderChanged = false;
+        }
+    }
+    
+    public static double demipToHz(double demip){
+        double period = 2*demip/1000000;
+        return 1/period;
+    }
+    
+    public static double hzToDemip(double hz){
+        double period = 1/hz;
+        return 1000000*period/2;
+    }
+    
+    public void wavesToFreq(){
+        view.changeLabelToFreq();
+        double min, max;
+        min = demipToHz(view.getWaveSpinnerMax());
+        max = demipToHz(view.getWaveSpinnerMin());
+        view.setWavesSpinnersData(0.1, min, max);
+        for(int i = 0; i < waves.size(); i++){
+            inFreq.set(i, true);
+            double value = demipToHz(waves.get(i).getOriginalTime());
+            view.setWaveSpinnerValue(value, i);
+        }
+    }
+    
+    public void wavesToPeriod(){
+        view.changeLabelToDPeriod();
+        double min, max;
+        min = hzToDemip(view.getWaveSpinnerMax());
+        max = hzToDemip(view.getWaveSpinnerMin());
+        view.setWavesSpinnersData(1, min, max);
+        for(int i = 0; i < waves.size(); i++){
+            inFreq.set(i, false);
+            double value = waves.get(i).getOriginalTime();
+            view.setWaveSpinnerValue(value, i);
+        }
+    }
+    
+    public void freqPeriod(){
+        if(isFreq){
+            isFreq = false;
+            wavesToPeriod();
+        }else{
+            isFreq = true;
+            wavesToFreq();
         }
     }
     
