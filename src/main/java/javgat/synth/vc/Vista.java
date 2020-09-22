@@ -143,7 +143,7 @@ public class Vista extends javax.swing.JFrame {
         jLabelLogo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Overflow Synth 1.1");
+        setTitle("Overflow Synth 1.0.1");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jPanel1.setForeground(new java.awt.Color(60, 63, 65));
